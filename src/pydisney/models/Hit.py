@@ -1,14 +1,26 @@
+import json
 import logging
 from abc import ABC
 from typing import List, Optional
 
-from src.pydisney.Auth import Auth
-from src.pydisney.Config import APIConfig
-from src.pydisney.models.Season import Season
-from src.pydisney.utils.parser import safe_get
+from ..Auth import Auth
+from ..Config import APIConfig
+from .Season import Season
+from ..utils.parser import safe_get
 
 logger = logging.getLogger("pydisney")
 logger = logger.getChild("Hit")
+
+class MovieEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, '__dict__'):
+            return {
+                'title': obj.title if hasattr(obj, 'title') else None,
+                'startYear': obj.startYear if hasattr(obj, 'startYear') else None,
+                'mediaMetadata': obj.mediaMetadata if hasattr(obj, 'mediaMetadata') else None,
+                'type': obj.__class__.__name__
+            }
+        return json.JSONEncoder.default(self, obj)
 
 
 class Hit(ABC):
@@ -35,6 +47,9 @@ class Hit(ABC):
 
     def _parse_data(self, data):
 
+        json_output = json.dumps(data, indent=2, cls=MovieEncoder)
+        print(json_output)
+        
         self.id = data["id"]
         self.title = data["visuals"]["title"]
         self.brief_desc = safe_get(data, ["visuals", "description", "brief"])
@@ -93,7 +108,7 @@ class Hit(ABC):
         return self.__release_date
 
     def _get_more_data(self) -> None:
-        url = f"https://disney.api.edge.bamgrid.com/explore/v1.7/page/entity-{self.id}"
+        url = f"https://disney.api.edge.bamgrid.com/explore/v1.6/page/entity-{self.id}"
         res = Auth.make_request("GET", url)
         self.__is_movie = True
         for container in res["data"]["page"]["containers"]:

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.pydisney.utils.parser import safe_get
+from ..utils.parser import safe_get
 
 
 class Episode:

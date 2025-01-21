@@ -26,7 +26,7 @@ class Season:
         return self.__episodes
 
     def _get_more_data(self):
-        url = f"https://disney.api.edge.bamgrid.com/explore/v1.7/season/{self.id}"
+        url = f"https://disney.api.edge.bamgrid.com/explore/v1.6/season/{self.id}"
         res = Auth.make_pagination_request("GET", url)
         for page in res:
             for element in page["data"]["season"]["items"]:

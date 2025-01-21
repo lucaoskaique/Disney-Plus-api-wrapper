@@ -3,3 +3,24 @@
 /downloads
 /requirements.txt
 /pypi-tester.py
+
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# venv
+.venv
+
+# dotenv
+.env
+
+# coverage
+.coverage
+
+# Local caches
+data
+flow-bin
